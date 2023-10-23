@@ -1,11 +1,61 @@
-
-create table if not exists activitytype
-(
-    activitytypeid integer not null
-        constraint pk_activitytype
-            primary key,
-    name           text    not null,
-    sysname        text    not null
+CREATE TABLE IF NOT EXISTS ActivityType (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100)
 );
 
--- 
+CREATE TABLE IF NOT EXISTS Activity (
+    Id INT PRIMARY KEY,
+    ParentId INT,
+    ActivityTypeId INT NOT NULL,
+    Name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id),
+    FOREIGN KEY (ActivityTypeId) REFERENCES ActivityType(Id)
+);
+
+CREATE TABLE IF NOT EXISTS Program (
+    Id INT PRIMARY KEY NOT NULL,
+    ParentId INT NOT NULL, 
+    Name VARCHAR(200) NOT NULL,
+    CONSTRAINT FK_Program_Activity FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id)
+);
+
+CREATE TABLE IF NOT EXISTS SubProgram (
+    Id INT PRIMARY KEY NOT NULL,
+    ParentId INT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    CONSTRAINT FK_SubProgram_Activity FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id)
+);
+
+CREATE TABLE IF NOT EXISTS Project (
+    Id INT PRIMARY KEY NOT NULL,
+    ParentId INT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    CONSTRAINT FK_Project_Activity FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id)
+);
+
+CREATE TABLE IF NOT EXISTS Area (
+    Id INT PRIMARY KEY NOT NULL,
+    Name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Contract (
+    Id INT PRIMARY KEY NOT NULL,
+    ParentId INT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    AreaId INT,
+    CONSTRAINT FK_Contract_Activity FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id),
+    FOREIGN KEY (AreaId) REFERENCES Area(Id)
+);
+
+CREATE TABLE IF NOT EXISTS Point (
+    Id INT PRIMARY KEY NOT NULL,
+    ParentId INT NOT NULL,
+    Name VARCHAR(200) NOT NULL,
+    CONSTRAINT FK_Point_Activity FOREIGN KEY (Id) REFERENCES Activity(Id),
+    FOREIGN KEY (ParentId) REFERENCES Activity(Id)
+);
